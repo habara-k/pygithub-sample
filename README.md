@@ -24,5 +24,5 @@ python -m SimpleHTTPServer 8080
 ```
 
 5. http://localhost:8080/ にアクセス
-6. Sign in With Github をクリックし, Autorizeする
+6. Sign in With Github をクリックし, Authorizeする
 7. http://localhost:8080/user にリダイレクトされて, Githubのユーザ名が表示されてたらOK

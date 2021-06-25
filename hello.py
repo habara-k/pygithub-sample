@@ -13,6 +13,7 @@ env = dotenv_values(".env")
 
 app = Flask(__name__)
 app.secret_key = env["FLASK_SECRET_KEY"]
+app.config['JSON_AS_ASCII'] = False
 
 
 @app.route('/oauth')
@@ -48,3 +49,26 @@ def user():
     g = Github(session['access_token'])
     user = g.get_user()
     return "Hello, {}".format(user.name)
+
+
+# issueを表示
+@app.route("/repos/<repo>/issues")
+def issues(repo):
+    g = Github(session['access_token'])
+    user = g.get_user()
+    repo = g.get_repo("{}/{}".format(user.login, repo))
+    issues = repo.get_issues()
+    issues = list(map(lambda issue: {'title': issue.title, 'number': issue.number}, issues))
+    return jsonify(issues)
+
+
+# 指定されたissueのコメントを表示
+@app.route("/repos/<repo>/issues/<int:issue_number>/comments")
+def comments(repo, issue_number):
+    g = Github(session['access_token'])
+    user = g.get_user()
+    repo = g.get_repo("{}/{}".format(user.login, repo))
+    issue = repo.get_issue(issue_number)
+    comments = issue.get_comments()
+    comments = list(map(lambda comment: {'user': comment.user.login, 'body': comment.body}, comments))
+    return jsonify(comments) 
